@@ -194,6 +194,14 @@ def make_change(amount, coins):
     if amount < smallest:
         return None
     "*** YOUR CODE HERE ***"
+    if amount == smallest:
+        return [smallest]
+
+    with_smallest = make_change(amount - smallest, rest)
+    if with_smallest is not None:
+        return [smallest] + with_smallest
+
+    return make_change(amount, rest)
 
 
 def remove_one(coins, coin):
@@ -292,3 +300,18 @@ class ChangeMachine:
     def change(self, coin):
         """Return change for coin, removing the result from self.coins."""
         "*** YOUR CODE HERE ***"
+        # 把加入的钱合在原来的钱里面
+        if coin in self.coins:
+            self.coins[coin] += 1
+        else:
+            self.coins[coin] = 1
+        # 调用make_change函数返回一个小钱更多的列表
+        result = make_change(coin, self.coins)
+        # 去除换出去的钱
+        if result is not None:
+            for b in result:
+                if self.coins[b] == 1:
+                    self.coins.pop(b)
+                else:
+                    self.coins[b] -= 1
+        return result
